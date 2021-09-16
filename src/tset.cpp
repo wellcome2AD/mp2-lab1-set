@@ -43,62 +43,96 @@ int TSet::IsMember(const int Elem) const // элемент множества?
 
 void TSet::InsElem(const int Elem) // включение элемента множества
 {
+    BitField.SetBit(Elem);
 }
 
 void TSet::DelElem(const int Elem) // исключение элемента множества
 {
+    BitField.ClrBit(Elem);
 }
 
 // теоретико-множественные операции
 
-TSet& TSet::operator=(const TSet &s) // присваивание
+TSet& TSet::operator=(const TSet& s)// присваивание
 {
-    return FAKE_SET;
+    if (&s == this)
+        return *this;
+    MaxPower = s.MaxPower;
+    BitField = s.BitField;
+    return *this;
 }
 
 int TSet::operator==(const TSet &s) const // сравнение
 {
-    return FAKE_INT;
+    return(BitField == s.BitField);
 }
 
 int TSet::operator!=(const TSet &s) const // сравнение
 {
-    return FAKE_INT;
+    return(BitField != s.BitField);
 }
 
 TSet TSet::operator+(const TSet &s) // объединение
 {
-    return FAKE_SET;
+    return BitField|s.BitField;
 }
 
 TSet TSet::operator+(const int Elem) // объединение с элементом
 {
-    return FAKE_SET;
+    TSet NewSet(*this);
+    NewSet.InsElem(Elem);
+    return NewSet;
 }
 
 TSet TSet::operator-(const int Elem) // разность с элементом
 {
-    return FAKE_SET;
+    TSet NewSet(*this);
+    NewSet.DelElem(Elem);
+    return NewSet; 
 }
 
 TSet TSet::operator*(const TSet &s) // пересечение
 {
-    return FAKE_SET;
+    return BitField & s.BitField;
 }
 
 TSet TSet::operator~(void) // дополнение
 {
-    return FAKE_SET;
+    return ~BitField;
 }
 
 // перегрузка ввода/вывода
 
 istream &operator>>(istream &istr, TSet &s) // ввод
 {
+    int num = 0;
+    char ch;
+    do
+    {
+        istr >> ch;
+    } while (ch != '{');
+    do
+    {
+        istr >> num;
+        s.InsElem(num);
+        do 
+        {
+            istr >> ch;
+        } while (ch != ',' && ch != '}');
+    } while (ch != '}');
     return istr;
 }
 
 ostream& operator<<(ostream &ostr, const TSet &s) // вывод
 {
+    int f = 0;
+    ostr << '{';
+    for (int i = 0; i < s.MaxPower; i++)
+        if (s.IsMember(i))
+        {
+            ostr << (f ? " " : ", ") << i;
+            f = 1;
+        }
+    ostr << "}";
     return ostr;
 }
