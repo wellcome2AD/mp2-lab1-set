@@ -130,7 +130,7 @@ ostream& operator<<(ostream &ostr, const TSet &s) // вывод
     for (int i = 0; i < s.MaxPower; i++)
         if (s.IsMember(i))
         {
-            ostr << (f ? " " : ", ") << i;
+            ostr << (f ? ", " : " ") << i;
             f = 1;
         }
     ostr << "}";
